@@ -53,40 +53,32 @@ module.exports = async (client) => {
 
   // This part of code will automatically delete the command in the Discord API if the command file 
   // is deleted in the "Commands" folder
-  const deleteCommand = async () => {
-    const slashCmdsName = [];
-    const cmdsName = [];
+  const slashCmdsName = [];
+  const cmdsName = [];
 
-    for (const slashCommand of slashCommands) {
-      slashCmdsName.push(slashCommand.name);
-    };
-    for (const command of commands) {
-      cmdsName.push(command.name);
-    };
-
-    // Checking to see if any files are deleted in the "Commands" folder
-    if (slashCommands.length < commands.length) {
-      // Getting the command that is deleted in the folder
-      const result = cmdsName.filter(async item => {
-        if (!slashCmdsName.includes(item)) {
-          const commandToDelete = commands.filter((cmd) => {
-            return cmd.name === item;
-          });
-
-          for (const cmdToDelete of commandToDelete) {
-            console.log(`Deleting slash command: ${cmdToDelete.name}`);
-            await getApp(client, guildId).commands(cmdToDelete.id).delete();
-          };
-        };
-      });
-    };
-
-    // For every 5 seconds it is going to check if there are any commands
-    // deleted in the "Commands" folder
-    setTimeout(deleteCommand, 1000 * 5);
+  for (const slashCommand of slashCommands) {
+    slashCmdsName.push(slashCommand.name);
+  };
+  for (const command of commands) {
+    cmdsName.push(command.name);
   };
 
-  await deleteCommand();
+  // Checking to see if any files are deleted in the "Commands" folder
+  if (slashCommands.length < commands.length) {
+    // Getting the command that is deleted in the folder
+    const result = cmdsName.filter(async item => {
+      if (!slashCmdsName.includes(item)) {
+        const commandToDelete = commands.filter((cmd) => {
+          return cmd.name === item;
+        });
+
+        for (const cmdToDelete of commandToDelete) {
+          console.log(`Deleting slash command: ${cmdToDelete.name}`);
+          await getApp(client, guildId).commands(cmdToDelete.id).delete();
+        };
+      };
+    });
+  };
 
   // Post every command in the "Commands" folder to the Discord API
   for (const cmd of slashCommands) {
